@@ -13,10 +13,26 @@ execute "Restart Networking" do
   action :nothing
 end
 
+execute "Load IPTables" do
+  command "cat /etc/network/iptables | iptables-restore"
+  action :nothing
+end
+
+execute "Enable IPv4 Forwarding" do
+  command "echo 1 > /proc/sys/net/ipv4/ip_forward"
+  only_if { ::IO.read("/proc/sys/net/ipv4/ip_forward").strip != "1" }
+end
+
 template "/etc/network/interfaces" do
   source "interfaces.erb"
   backup false
   notifies :run, "execute[Restart Networking]", :immediately
+end
+
+template "/etc/network/iptables" do
+  source "iptables.erb"
+  backup false
+  notifies :run, "execute[Load IPTables]", :immediately
 end
 
 package "syslog-ng"
