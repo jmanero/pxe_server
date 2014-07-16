@@ -35,10 +35,11 @@ template "/etc/network/iptables" do
   notifies :run, "execute[Load IPTables]", :immediately
 end
 
+package "isc-dhcp-server"
+package "ntp"
 package "syslog-ng"
 package "tftpd-hpa"
 package "tftp-hpa"
-package "isc-dhcp-server"
 
 service "syslog-ng" do
   action [:start, :enable]
