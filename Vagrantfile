@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-VAGRANTFILE_API_VERSION = "2"
+VAGRANTFILE_API_VERSION = "2".freeze
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.define :server do |server|
@@ -10,11 +10,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     server.vm.hostname = "pxe-server.local"
 
     server.vm.provider :virtualbox do |v|
-      v.customize ["modifyvm", :id, "--nic2", "bridged", "--bridgeadapter2", "en0"] ## DANGER ZONE
-#      v.customize ["modifyvm", :id, "--nic2", "hostonly", "--hostonlyadapter2", "vboxnet4"] ## Safe Testing
+      v.customize ["modifyvm", :id, "--nic2", "bridged", "--bridgeadapter2", "en4"] ## DANGER ZONE
+      # v.customize ["modifyvm", :id, "--nic2", "hostonly", "--hostonlyadapter2", "vboxnet4"] ## Safe Testing
     end
 
-    config.omnibus.chef_version = "11.12.2"
+    config.omnibus.chef_version = :latest
     server.vm.provision :chef_solo do |chef|
       chef.add_recipe "pxe_server::default"
     end
